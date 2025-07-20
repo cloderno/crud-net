@@ -3,6 +3,7 @@ using crud_net.Dtos.Stock;
 using crud_net.Mappers;
 using crud_net.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace crud_net.Controllers;
 
@@ -17,44 +18,52 @@ public class StockController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        var stocks = _context.Stocks.ToList()
-            .Select(s => s.ToStockDto());
+        var stocks = await _context.Stocks
+            .Select(s => s.ToStockDto())
+            .ToListAsync();
+        
         return Ok(stocks);
     }
     
     [HttpGet("{id}")]
-    public IActionResult GetById([FromRoute] int id)
+    public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        var stock = _context.Stocks.Find(id);
+        // changed find to firstordefault = find uploads full model from db
+        var stockDto = await _context.Stocks
+            .Where(x => x.Id == id)
+            .Select(s => s.ToStockDto())
+            .FirstOrDefaultAsync();
 
-        if (stock == null)
+        if (stockDto == null)
         {
             return NotFound();
         }
 
-        return Ok(stock.ToStockDto());
+        return Ok(stockDto);
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] CreateStockRequestDto stockDto)
+    public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
     {
         var stock = stockDto.ToStockFromCreateDto();
         
         _context.Stocks.Add(stock);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
+        
+        var createdStockDto = stock.ToStockDto();
 
-        return CreatedAtAction(nameof(GetById), new { id = stock.Id }, stock.ToStockDto()); 
+        return CreatedAtAction(nameof(GetById), new { id = stock.Id }, createdStockDto); 
         // return stockdto instead of stock
     }
     
     [HttpPut]
     [Route("{id}")]
-    public IActionResult Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
     {
-        // firstordefault is more flexible, we can set each comparison we want
-        var stock = _context.Stocks.FirstOrDefault(x => x.Id == id); 
+        // FirstOrDefaultAsync allows custom filtering, unlike FindAsync which works only by primary key
+        var stock = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id); 
         if (stock == null)
         {
             return NotFound();
@@ -67,23 +76,23 @@ public class StockController : ControllerBase
         stock.Industry = updateDto.Industry;
         stock.LastDiv = updateDto.LastDiv;
 
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return Ok(stock.ToStockDto());
     }
 
     [HttpDelete]
     [Route("{id}")]
-    public IActionResult Delete([FromRoute] int id)
+    public async Task<IActionResult> Delete([FromRoute] int id)
     {
-        var stock = _context.Stocks.FirstOrDefault(x => x.Id == id);
+        var stock = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
         if (stock == null)
         {
             return NotFound();
         }
 
         _context.Stocks.Remove(stock);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return NoContent(); // when doing delete == success
     }

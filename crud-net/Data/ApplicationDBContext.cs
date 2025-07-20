@@ -7,7 +7,6 @@ public class ApplicationDBContext: DbContext
 {
     public ApplicationDBContext(DbContextOptions options) : base(options) // just a constructor
     {
-        
     }
     
     public DbSet<Stock> Stocks { get; set; }

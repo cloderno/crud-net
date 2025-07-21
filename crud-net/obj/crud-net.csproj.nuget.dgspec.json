@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/Users/rating/RiderProjects/crud-net/crud-net/crud-net.csproj": {}
+    "D:\\VisualStudioProjects\\crud-net\\crud-net\\crud-net.csproj": {}
   },
   "projects": {
-    "/Users/rating/RiderProjects/crud-net/crud-net/crud-net.csproj": {
+    "D:\\VisualStudioProjects\\crud-net\\crud-net\\crud-net.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/rating/RiderProjects/crud-net/crud-net/crud-net.csproj",
+        "projectUniqueName": "D:\\VisualStudioProjects\\crud-net\\crud-net\\crud-net.csproj",
         "projectName": "crud-net",
-        "projectPath": "/Users/rating/RiderProjects/crud-net/crud-net/crud-net.csproj",
-        "packagesPath": "/Users/rating/.nuget/packages/",
-        "outputPath": "/Users/rating/RiderProjects/crud-net/crud-net/obj/",
+        "projectPath": "D:\\VisualStudioProjects\\crud-net\\crud-net\\crud-net.csproj",
+        "packagesPath": "C:\\Users\\Ydr\\.nuget\\packages\\",
+        "outputPath": "D:\\VisualStudioProjects\\crud-net\\crud-net\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/rating/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Ydr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -37,12 +43,17 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
+              "target": "Package",
+              "version": "[8.0.18, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.18, )"
@@ -62,6 +73,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.7, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
             },
             "Npgsql": {
               "target": "Package",
@@ -91,6 +106,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.24, 8.0.24]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.24, 8.0.24]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.24, 8.0.24]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.24, 8.0.24]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -99,7 +132,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.412/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

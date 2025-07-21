@@ -5,7 +5,8 @@ namespace crud_net.Data;
 
 public class ApplicationDBContext: DbContext
 {
-    public ApplicationDBContext(DbContextOptions options) : base(options) // just a constructor
+    // just a constructor
+    public ApplicationDBContext(DbContextOptions options) : base(options) 
     {
     }
     

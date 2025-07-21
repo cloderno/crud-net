@@ -1,7 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace crud_net.Models;
 
+[Index(nameof(Symbol), IsUnique = true)]
 public class Stock
 {
     public int Id { get; set; }

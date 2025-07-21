@@ -1,3 +1,5 @@
+using crud_net.Dtos.Comment;
+
 namespace crud_net.Dtos.Stock;
 
 public class StockDto
@@ -9,6 +11,5 @@ public class StockDto
     public decimal LastDiv { get; set; }
     public string Industry { get; set; } = string.Empty;
     public long MarketCap { get; set; }
-    
-    // comments
+    public List<CommentDto> Comments { get; set; } = new List<CommentDto>();
 }

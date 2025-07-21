@@ -1,5 +1,6 @@
 using crud_net.Data;
 using crud_net.Dtos.Stock;
+using crud_net.Interfaces;
 using crud_net.Mappers;
 using crud_net.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,35 +13,36 @@ namespace crud_net.Controllers;
 public class StockController : ControllerBase
 {
     private readonly ApplicationDBContext _context;
-    public StockController(ApplicationDBContext context)
+    private readonly IStockRepository  _stockRepository;
+    
+    public StockController(ApplicationDBContext context, IStockRepository stockRepository)
     {
+        _stockRepository =  stockRepository;
         _context = context;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var stocks = await _context.Stocks
-            .Select(s => s.ToStockDto())
-            .ToListAsync();
+        var stocks = await _stockRepository.GetAllAsync();
         
-        return Ok(stocks);
+        var stockDtos = stocks.Select(s => s.ToStockDto());
+        
+        return Ok(stockDtos);
     }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         // changed find to firstordefault = find uploads full model from db
-        var stockDto = await _context.Stocks
-            .Where(x => x.Id == id)
-            .Select(s => s.ToStockDto())
-            .FirstOrDefaultAsync();
-
-        if (stockDto == null)
+        var stock = await _stockRepository.GetByIdAsync(id);
+        if (stock == null)
         {
             return NotFound();
         }
-
+        
+        var stockDto = stock.ToStockDto();
+        
         return Ok(stockDto);
     }
 
@@ -48,14 +50,8 @@ public class StockController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
     {
         var stock = stockDto.ToStockFromCreateDto();
-        
-        _context.Stocks.Add(stock);
-        await _context.SaveChangesAsync();
-        
-        var createdStockDto = stock.ToStockDto();
-
-        return CreatedAtAction(nameof(GetById), new { id = stock.Id }, createdStockDto); 
-        // return stockdto instead of stock
+        await _stockRepository.CreateAsync(stock);
+        return CreatedAtAction(nameof(GetById), new { id = stock.Id }, stock.ToStockDto()); // return stockdto instead of stock
     }
     
     [HttpPut]
@@ -63,20 +59,11 @@ public class StockController : ControllerBase
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
     {
         // FirstOrDefaultAsync allows custom filtering, unlike FindAsync which works only by primary key
-        var stock = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id); 
+        var stock = await _stockRepository.UpdateAsync(id, updateDto); 
         if (stock == null)
         {
             return NotFound();
         }
-        
-        stock.Symbol = updateDto.Symbol;
-        stock.CompanyName = updateDto.CompanyName;
-        stock.Purchase = updateDto.Purchase;
-        stock.MarketCap = updateDto.MarketCap;
-        stock.Industry = updateDto.Industry;
-        stock.LastDiv = updateDto.LastDiv;
-
-        await _context.SaveChangesAsync();
 
         return Ok(stock.ToStockDto());
     }
@@ -85,15 +72,12 @@ public class StockController : ControllerBase
     [Route("{id}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
-        var stock = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+        var stock = await _stockRepository.DeleteAsync(id);
         if (stock == null)
         {
             return NotFound();
         }
 
-        _context.Stocks.Remove(stock);
-        await _context.SaveChangesAsync();
-
-        return NoContent(); // when doing delete == success
+        return NoContent(); // when doing delete, nocontent == success
     }
 }
